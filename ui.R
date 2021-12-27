@@ -2,35 +2,39 @@ library(shiny)
 library(bslib)
 
 ui <- fluidPage(
+  withMathJax(),
   theme = bslib::bs_theme(bootswatch = "cerulean"),
   # Application title
   headerPanel("Stock Synthesis Selectivity"),
   sidebarLayout(
   # Sidebar controls to select selectivity type and parameters
     sidebarPanel(
-      selectInput("type", "Type:",
+      selectInput("type", "Selectivity Pattern:",
         choices = c(
           "Logistic (1)",
           "Double Normal (24)"
         )
       ),
-      sliderInput("range", "Lengths:",
+      sliderInput("range", "Length Range:",
         min = 0, max = 100, value = c(0, 50)
       ),
-      h4("Enter parameters below (slider or box)"),
+      h2("Enter parameters below (slider or box)"),
       conditionalPanel(
         condition = "input.type == 'Logistic (1)'",
         fluidRow(
           column(
             8,
-            sliderInput("par1", "Parameter 1, Size at inflection:", 0, 100, 10, 0.1),
-            sliderInput("par2", "Parameter 2, Width for 95% selection:", 0, 100, 1, 0.1)
+            sliderInput("par1", "Parameter 1 (p1), Size at inflection:", 0, 100, 10, 0.1),
+            sliderInput("par2", "Parameter 2 (p2), Width for 95% selection:", 0, 100, 1, 0.1)
           ),
           column(
             4,
             numericInput("par1N", "Parameter 1:", 10),
             numericInput("par2N", "Parameter 2:", 1)
           )
+        ),
+        fluidRow(h2("Equation:")),
+        fluidRow(helpText('$$S = \\frac{1}{1+e^{\\frac{-ln(19)(L - p1)}{p2}}}$$')
         )
       ),
       conditionalPanel(
