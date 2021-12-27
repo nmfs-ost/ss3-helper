@@ -90,13 +90,10 @@ doubleNorm24.fn <- function(x, a, b, c, d, e, f) {
   return(sel)
 }
 
-
-
-
-
-
 # Define server logic required to plot selectivity
 server <- function(input, output, session) {
+  # uncomment following line to use interactive theming tool
+  #bslib::bs_themer()
   observe({
     updateNumericInput(session, "par2N", value = input$par2)
   })
@@ -167,7 +164,6 @@ server <- function(input, output, session) {
   output$caption <- renderText({
     input$type
   })
-
 
   output$selPlot <- renderPlot({
     plot(len(), selex(), type = "l", lwd = 3, xlab = "Length", ylab = "Selectivity", ylim = c(0, 1))
