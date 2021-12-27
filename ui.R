@@ -5,7 +5,7 @@ library(shiny)
 ui <- pageWithSidebar(
 
   # Application title
-  headerPanel("Stock Synthesis Selectivity (TEST PHASE)"),
+  headerPanel("Stock Synthesis Selectivity"),
 
   #Sidebar controls to select selectivity type and parameters
   sidebarPanel(
