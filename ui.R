@@ -61,5 +61,15 @@ ui <- fluidPage(
       h3(textOutput("caption")),
       plotOutput("selPlot")
     )
+  ),
+  fluidRow(
+    column(1, HTML('<img src="https://raw.githubusercontent.com/nmfs-general-modeling-tools/nmfspalette/main/man/figures/noaa-fisheries-rgb-2line-horizontal-small.png" height="75" alt="NOAA Fisheries">'
+                   )
+    )
+  ),
+  fluidRow(
+    column(12,
+      HTML('<p><a href = "https://www.commerce.gov/">U.S. Department of Commerce</a> | <a href = "https://www.noaa.gov">National Oceanographic and Atmospheric Administration</a> | <a href = "https://www.fisheries.noaa.gov/">NOAA Fisheries</a></p>')
+    )
   )
 )
