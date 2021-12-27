@@ -24,8 +24,8 @@ ui <- pageWithSidebar(
       fluidRow(
         column(
           8,
-          sliderInput("par1", "Parameter 1:", 0, 100, 10, 0.1),
-          sliderInput("par2", "Parameter 2:", 0, 100, 1, 0.1)
+          sliderInput("par1", "Parameter 1, Size at inflection:", 0, 100, 10, 0.1),
+          sliderInput("par2", "Parameter 2, Width for 95% selection:", 0, 100, 1, 0.1)
         ),
         column(
           4,
