@@ -3,12 +3,27 @@ library(bslib)
 library(shinydashboard)
 
 ui <- dashboardPage(
-  #withMathJax(),
-  # theme = bslib::bs_theme(bootswatch = "cerulean"),
-  skin = "blue",
+  #withMathJax(), # math jax doesn't seem to work with shinydashboard?
+  skin = "blue", # the theme
   # Application title ----
   dashboardHeader(title = "SS3 Helper",
-    # add NOAA icon and link
+    # add help link
+    dropdownMenu(
+      type = "notifications",
+      headerText = strong("HELP"),
+      icon = icon("info"),
+      badgeStatus = NULL,
+      notificationItem(
+        text = "Ask a question",
+        icon = icon("question"),
+        href = "https://vlab.noaa.gov/web/stock-synthesis/public-forums"
+      ),
+      notificationItem(
+        text = "Report an issue",
+        icon = icon("bug"),
+        href = "https://github.com/r4ss/shiny_selex/issues"
+      )
+    ),
     tags$li(
       a(
         tags$img(src="NOAA-Logo-Without-Ring.png", height="30"),
