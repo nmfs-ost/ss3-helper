@@ -76,21 +76,21 @@ ui <- dashboardPage(
               fluidRow(
                 column(
                   8,
-                  sliderInput("par.a", "PEAK:", 0, 100, 25, 0.1),
-                  sliderInput("par.b", "TOP:", -5, 5, 0, 0.1),
-                  sliderInput("par.c", "ASC-WIDTH:", -5, 10, 3, 0.1),
-                  sliderInput("par.d", "DESC-WIDTH:", -5, 10, 3, 0.1),
-                  sliderInput("par.e", "INIT:", 0, 1, 0.1, 0.05),
-                  sliderInput("par.f", "FINAL:", 0, 1, 0.9, 0.05)
+                  sliderInput("par.a", "Peak:", 0, 100, 25, 0.1),
+                  sliderInput("par.b", "Top:", -5, 5, 0, 0.1),
+                  sliderInput("par.c", "Ascending width:", -5, 10, 3, 0.1),
+                  sliderInput("par.d", "Descending width:", -5, 10, 3, 0.1),
+                  sliderInput("par.e", "Initial:", 0, 1, 0.1, 0.05),
+                  sliderInput("par.f", "Final:", 0, 1, 0.9, 0.05)
                 ),
                 column(
                   4,
-                  numericInput("par.aN", "PEAK", 25),
-                  numericInput("par.bN", "TOP", 0),
-                  numericInput("par.cN", "ASC-WIDTH", 3),
-                  numericInput("par.dN", "DESC-WIDTH", 3),
-                  numericInput("par.eN", "INIT", 0.1),
-                  numericInput("par.fN", "FINAL", 0.9)
+                  numericInput("par.aN", "Peak", 25),
+                  numericInput("par.bN", "Top", 0),
+                  numericInput("par.cN", "Ascending width", 3),
+                  numericInput("par.dN", "Descending width", 3),
+                  numericInput("par.eN", "Initial", 0.1),
+                  numericInput("par.fN", "Final", 0.9)
                 )
               )
             )
