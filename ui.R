@@ -24,20 +24,20 @@ ui <- dashboardPage(
         href = "https://github.com/r4ss/shiny_selex/issues"
       )
     ),
-    tags$li(
-      a(
-        tags$img(src="NOAA-Logo-Without-Ring.png", height="30"),
-        href = "https://www.noaa.gov",
-        title = "Learn more about NOAA",
-      ),
-      class = "dropdown"
-    ),
     # add a link to the source code
     tags$li(
       a(
         tags$img(src="https://raw.githubusercontent.com/nmfs-fish-tools/nmfs-fish-tools.github.io/master/static/icons8-code-fork-24.png", height="30"),
         href = "https://github.com/r4ss/shiny_selex",
         title = "See the source code",
+      ),
+      class = "dropdown"
+    ),
+    tags$li(
+      a(
+        tags$img(src="NOAA-Logo-Without-Ring.png", height="30"),
+        href = "https://www.noaa.gov",
+        title = "Learn more about NOAA",
       ),
       class = "dropdown"
     )
