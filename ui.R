@@ -46,6 +46,7 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Selectivity", tabName = "Selectivity", icon = icon("ship")),
+      # menuItem("Time-Varying Parameters", tabName = "tv", icon = icon("clock")),
       menuItem("Info", tabName = "info", icon = icon("info"))
     )
   ),
@@ -82,6 +83,8 @@ ui <- dashboardPage(
                   numericInput("par2N", "Parameter 2:", 1)
                 )
               )#,
+              # not sure how to get eqns to work, with shiny dashboard, but would
+              # be nice to add
               # fluidRow(h2("Equation:")),
               # fluidRow(helpText('$$S = \\frac{1}{1+e^{\\frac{-ln(19)(L - p1)}{p2}}}$$')
               # )
@@ -116,11 +119,15 @@ ui <- dashboardPage(
           )
         )
       ),
+      # tabItem(
+      #   tabName = "tv",
+      #   p("To be developed")
+      # ),
       tabItem(
         tabName = "info",
         h2("Authors"),
         p("Andrea Havron, Allan Hicks, Ian Taylor, and Kathryn Doering"),
-        h2("Links to Learn more about NOAA"),
+        h2("Links to learn more about NOAA"),
         tags$ul(
           tags$li(a(href = "https://www.commerce.gov/","U.S. Department of Commerce")),
           tags$li(a(href = "https://www.noaa.gov","National Oceanographic and Atmospheric Administration (NOAA)")),
