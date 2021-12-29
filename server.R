@@ -27,11 +27,7 @@ logistic1.fn <- function(len, a, b) {
 #' @param use_f_999 Is -999 used for the final value?
 #' @return The double normal selectivity curve given the parameters as a vector
 doubleNorm24.fn <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
-  # UPDATED: - input e and f on 0 to 1 scal and transfrom to logit scale
-  #         - changed bin width in peak2 calculation
-  #         - updated index of sel when j2 < length(x)
-  # 	  - renamed input parameters, cannot have same names as the logistic function
-  #         - function not handling f < -1000 correctly
+  # TODO: check if function not handling f < -1000 correctly (and -999 vals)
   if(use_e_999) {
     e <- -999
   }
@@ -120,6 +116,8 @@ doubleNorm24.fn <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
 
 # Define server logic required to plot selectivity
 server <- function(input, output, session) {
+  # Input for logistic parameters;
+  # make sure sliders and numeric iputs show the same thing
   observe({
     updateNumericInput(session, "par2N", value = input$par2)
   })
@@ -134,7 +132,6 @@ server <- function(input, output, session) {
   })
 
   # Input for double normal parameters: all parameters on the scale the user enters in SS3
-
   # gray out slider and write in box if using -999 instead;
   observeEvent(input$use_999_init, {
     if (input$use_999_init == TRUE) {
@@ -145,7 +142,6 @@ server <- function(input, output, session) {
       enable("par.eN")
     }
   })
-
   observeEvent(input$use_999_fin, {
     if (input$use_999_fin == TRUE) {
       disable("par.f")
@@ -156,6 +152,7 @@ server <- function(input, output, session) {
     }
   })
 
+  # make sure sliders and numeric iputs show the same thing
   observe({
     updateNumericInput(session, "par.aN", value = input$par.a)
   })
@@ -192,12 +189,13 @@ server <- function(input, output, session) {
   observe({
     updateSliderInput(session, "par.f", value = input$par.fN)
   })
-
+  # get the lengths (or ages) based on the range the user inputs.
+  # note using 0.1 bins.
   len <- reactive({
     seq(as.numeric(input$range[1]), as.numeric(input$range[2]), 0.1)
   })
 
-  # Tell it what the equation is based on user input
+  # Calculate the selectivity based on user input
   selex <- reactive({
     switch(input$type,
       "Logistic (1)" = logistic1.fn(len(), input$par1, input$par2),
@@ -210,10 +208,11 @@ server <- function(input, output, session) {
     )
   })
 
+  # Create the plot title
   output$caption <- renderText({
     input$type
   })
-
+  # creat the plot
   output$selPlot <- renderPlot({
     plot(len(), selex(), type = "l", lwd = 3, xlab = "Length or Age", ylab = "Selectivity (S)", ylim = c(0, 1))
   })
