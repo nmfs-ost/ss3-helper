@@ -1,5 +1,6 @@
 library(shiny)
 
+
 #' Calculate values for length logistic selectivity
 #'
 #' @param len A vector of lengths or ages
@@ -22,20 +23,30 @@ logistic1.fn <- function(len, a, b) {
 #' @param d The Descending width
 #' @param e The initial value
 #' @param f The final value
+#' @param use_e_999 Is -999 used for the initial value?
+#' @param use_f_999 Is -999 used for the final value?
 #' @return The double normal selectivity curve given the parameters as a vector
-doubleNorm24.fn <- function(x, a, b, c, d, e, f) {
+doubleNorm24.fn <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
   # UPDATED: - input e and f on 0 to 1 scal and transfrom to logit scale
   #         - changed bin width in peak2 calculation
   #         - updated index of sel when j2 < length(x)
   # 	  - renamed input parameters, cannot have same names as the logistic function
   #         - function not handling f < -1000 correctly
+  if(use_e_999) {
+    e <- -999
+  }
+  if(use_f_999) {
+    f <- -999
+  }
   if (e == 0) { # Avoid errors on the bounds
     e <- 1 - 0.999955 # an input that results in approx -10
   }
   if (e == 1) {
     e <- 0.999955 # an input that results in approx 10
   }
-  e <- log(e / (1 - e)) # transform input to logit
+  if (e > 0) {
+    e <- log(e / (1 - e)) # transform input to logit
+  }
 
   if (f == 0) { # Avoid errors on the bounds
     f <- 1 - 0.999955 # an input that results in approx -10
@@ -43,8 +54,9 @@ doubleNorm24.fn <- function(x, a, b, c, d, e, f) {
   if (f == 1) {
     f <- 0.999955 # an input that results in approx 10
   }
-  f <- log(f / (1 - f)) # transform input to logit
-
+  if(f > 0) {
+    f <- log(f / (1 - f)) # transform input to logit
+  }
   sel <- rep(NA, length(x))
   startbin <- 1
   peak <- a
@@ -108,8 +120,6 @@ doubleNorm24.fn <- function(x, a, b, c, d, e, f) {
 
 # Define server logic required to plot selectivity
 server <- function(input, output, session) {
-  # uncomment following line to use interactive theming tool
-  #bslib::bs_themer()
   observe({
     updateNumericInput(session, "par2N", value = input$par2)
   })
@@ -123,7 +133,29 @@ server <- function(input, output, session) {
     updateSliderInput(session, "par1", value = input$par1N)
   })
 
-  # Input for double normal parameters: all parameters on the scale the user enters in SS
+  # Input for double normal parameters: all parameters on the scale the user enters in SS3
+
+  # gray out slider and write in box if using -999 instead;
+  observeEvent(input$use_999_init, {
+    if (input$use_999_init == TRUE) {
+      disable("par.e")
+      disable("par.eN")
+    } else {
+      enable("par.e")
+      enable("par.eN")
+    }
+  })
+
+  observeEvent(input$use_999_fin, {
+    if (input$use_999_fin == TRUE) {
+      disable("par.f")
+      disable("par.fN")
+    } else {
+      enable("par.f")
+      enable("par.fN")
+    }
+  })
+
   observe({
     updateNumericInput(session, "par.aN", value = input$par.a)
   })
@@ -172,7 +204,8 @@ server <- function(input, output, session) {
       "Double Normal (24 length, 20 age)" = doubleNorm24.fn(
         len(), input$par.a, input$par.b,
         input$par.c, input$par.d,
-        input$par.e, input$par.f
+        input$par.e, input$par.f, use_e_999 = input$use_999_init,
+        use_f_999 = input$use_999_fin
       )
     )
   })

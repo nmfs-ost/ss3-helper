@@ -1,6 +1,7 @@
 library(shiny)
 library(bslib)
 library(shinydashboard)
+library(shinyjs)
 
 ui <- dashboardPage(
   #withMathJax(), # math jax doesn't seem to work with shinydashboard?
@@ -52,6 +53,7 @@ ui <- dashboardPage(
   ),
   # body ----
   dashboardBody(
+    useShinyjs(),
     tabItems(
       tabItem(tabName = "Selectivity",
         sidebarLayout(
@@ -89,6 +91,14 @@ ui <- dashboardPage(
               # fluidRow(helpText('$$S = \\frac{1}{1+e^{\\frac{-ln(19)(L - p1)}{p2}}}$$')
               # )
             ),
+            # conditionalPanel(
+            #   condition = "input.type == 'Double Normal (24 length, 20 age)'",
+            #   fluidRow(
+            #     column(6,
+            #     checkboxInput("use_999_init", "Use -999 for Initial")),
+            #     checkboxInput("use_999_fin", "Use -999 for Final")
+            #   )
+            # ),
             conditionalPanel(
               condition = "input.type == 'Double Normal (24 length, 20 age)'",
               fluidRow(
@@ -110,8 +120,14 @@ ui <- dashboardPage(
                   numericInput("par.eN", "Initial", 0.1),
                   numericInput("par.fN", "Final", 0.9)
                 )
+              ),
+              fluidRow(
+                column(6,
+                  checkboxInput("use_999_init", "Use -999 for Initial")),
+                column(6,
+                   checkboxInput("use_999_fin", "Use -999 for Final"))
+                 )
               )
-            )
           ),
           mainPanel(
             h3(textOutput("caption")),
