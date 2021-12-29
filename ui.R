@@ -75,7 +75,7 @@ ui <- dashboardPage(
                   sliderInput("par1", "Parameter 1 (p1), Size at inflection:",
                               0, 100, 10, 0.1),
                   sliderInput("par2", "Parameter 2 (p2), Width for 95% selection:",
-                              0, 100, 1, 0.1)
+                              -100, 100, 1, 0.1)
                 ),
                 column(
                   4,
