@@ -11,7 +11,7 @@ ui <- dashboardPage(
     dropdownMenu(
       type = "notifications",
       headerText = strong("HELP"),
-      icon = icon("info"),
+      icon = icon("question-circle"),
       badgeStatus = NULL,
       notificationItem(
         text = "Ask a question",
