@@ -1,5 +1,11 @@
 library(shiny)
 
+#' Calculate values for length logistic selectivity
+#'
+#' @param len A vector of lengths or ages
+#' @param a The inflection point
+#' @param b The 95% width
+#' @return The selectivity curve as a vector
 logistic1.fn <- function(len, a, b) {
   neglog19 <- -1 * log(19)
   denom <- 1. + exp(neglog19 * (len - a) / b)
@@ -7,11 +13,21 @@ logistic1.fn <- function(len, a, b) {
   return(sel)
 }
 
+#' Calculate values for double normal selectivity
+#'
+#' @param x A vector of lengths or ages
+#' @param a The peak
+#' @param b The top
+#' @param c The ascending width
+#' @param d The Descending width
+#' @param e The initial value
+#' @param f The final value
+#' @return The double normal selectivity curve given the parameters as a vector
 doubleNorm24.fn <- function(x, a, b, c, d, e, f) {
   # UPDATED: - input e and f on 0 to 1 scal and transfrom to logit scale
   #         - changed bin width in peak2 calculation
   #         - updated index of sel when j2 < length(x)
-  # 	  - renamed input parameters, cannot have same names as the logitstic function
+  # 	  - renamed input parameters, cannot have same names as the logistic function
   #         - function not handling f < -1000 correctly
   if (e == 0) { # Avoid errors on the bounds
     e <- 1 - 0.999955 # an input that results in approx -10
@@ -153,7 +169,7 @@ server <- function(input, output, session) {
   selex <- reactive({
     switch(input$type,
       "Logistic (1)" = logistic1.fn(len(), input$par1, input$par2),
-      "Double Normal (24)" = doubleNorm24.fn(
+      "Double Normal (24 length, 20 age)" = doubleNorm24.fn(
         len(), input$par.a, input$par.b,
         input$par.c, input$par.d,
         input$par.e, input$par.f
@@ -166,6 +182,6 @@ server <- function(input, output, session) {
   })
 
   output$selPlot <- renderPlot({
-    plot(len(), selex(), type = "l", lwd = 3, xlab = "Length (L)", ylab = "Selectivity (S)", ylim = c(0, 1))
+    plot(len(), selex(), type = "l", lwd = 3, xlab = "Length or Age", ylab = "Selectivity (S)", ylim = c(0, 1))
   })
 }

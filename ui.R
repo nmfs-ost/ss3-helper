@@ -60,10 +60,10 @@ ui <- dashboardPage(
             selectInput("type", "Selectivity Pattern:",
               choices = c(
                 "Logistic (1)",
-                "Double Normal (24)"
+                "Double Normal (24 length, 20 age)"
               )
             ),
-            sliderInput("range", "Length Range:",
+            sliderInput("range", "Length or Age Range:",
               min = 0, max = 100, value = c(0, 50)
             ),
             h2("Enter parameters below (slider or box)"),
@@ -90,7 +90,7 @@ ui <- dashboardPage(
               # )
             ),
             conditionalPanel(
-              condition = "input.type == 'Double Normal (24)'",
+              condition = "input.type == 'Double Normal (24 length, 20 age)'",
               fluidRow(
                 column(
                   8,
