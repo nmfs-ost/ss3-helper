@@ -97,12 +97,12 @@ ui <- dashboardPage(
               fluidRow(
                 column(
                   8,
-                  sliderInput("par.a", "Peak:", 0, 100, 25, 0.1),
-                  sliderInput("par.b", "Top:", -5, 5, 0, 0.1),
+                  sliderInput("par.a", "Length or Age for Peak:", 0, 100, 25, 0.1),
+                  sliderInput("par.b", "Width of Top:", -5, 5, 0, 0.1),
                   sliderInput("par.c", "Ascending width:", -5, 10, 3, 0.1),
                   sliderInput("par.d", "Descending width:", -5, 10, 3, 0.1),
-                  sliderInput("par.e", "Initial:", 0, 1, 0.1, 0.05),
-                  sliderInput("par.f", "Final:", 0, 1, 0.9, 0.05)
+                  sliderInput("par.e", "Initial Selectivity:", 0, 1, 0.1, 0.05),
+                  sliderInput("par.f", "Final Selectivity:", 0, 1, 0.9, 0.05)
                 ),
                 column(
                   4,
