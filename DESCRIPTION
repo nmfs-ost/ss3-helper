@@ -1,5 +1,5 @@
 Package: shiny_selex
-Title: What the Package Does (One Line, Title Case)
+Title: A Helper Tool for SS3
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
@@ -7,7 +7,8 @@ Authors@R:
            role = c("aut", "cre"),
            email = "first.last@example.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: A shiny app for Stock Synthesis (SS3). This tools allows users to
+ see selectivity patterns and other specifications for Stock Synthesis models.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
