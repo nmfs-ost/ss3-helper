@@ -116,22 +116,27 @@ ui <- dashboardPage(
               ),
               fluidRow(
                 column(6,
-                  checkboxInput("use_999_init", "Use -999 for Initial")),
+                  checkboxInput("use_999_init", "Use -999 for Initial")
+                ),
                 column(6,
-                   checkboxInput("use_999_fin", "Use -999 for Final"))
-                 ),
-              fluidRow(
-                h2("Additional options for double normal selectivity"),
-                tags$ul(
-                   tags$li("For initial, an additional option not illustrated is to use a value <-1000, which ignores the initial selectivity algorithm and sets selectivity equal to 1.0e-06 for size bins 1 through bin = -1001 – value. So a value of –1003 would set selectivity to a nil level for bins 1 through 2 and begin using the modeled selectivity in bin 3."),
-                  tags$li("For final, an additional option not illustrated is to use a value <-1000. This sets selectivity as constant for bins greater than bin number = -1000 – value. ")
+                   checkboxInput("use_999_fin", "Use -999 for Final")
                 )
               )
             )
           ),
           mainPanel(
             h3(textOutput("caption")),
-            plotOutput("selPlot")
+            plotOutput("selPlot"),
+            conditionalPanel(
+              condition = "input.type == 'Double Normal (24 length, 20 age)'",
+              fluidRow(
+                h2("Additional options for double normal selectivity"),
+                tags$ul(
+                  tags$li("For initial, an additional option not illustrated is to use a value <-1000, which ignores the initial selectivity algorithm and sets selectivity equal to 1.0e-06 for size bins 1 through bin = -1001 – value. So a value of –1003 would set selectivity to a nil level for bins 1 through 2 and begin using the modeled selectivity in bin 3."),
+                  tags$li("For final, an additional option not illustrated is to use a value <-1000. This sets selectivity as constant for bins greater than bin number = -1000 – value. ")
+                )
+              )
+            )
           )
         )
       ),
