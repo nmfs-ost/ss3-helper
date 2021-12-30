@@ -75,6 +75,27 @@ server <- function(input, output, session) {
   observe({
     updateSliderInput(session, "par.f", value = input$par.fN)
   })
+
+  # inputs for nonparametric parameters
+  observe({
+    updateNumericInput(session, "nonpar_tot_ptsN", value = input$nonpar_tot_pts)
+  })
+  observe({
+    updateSliderInput(session, "nonpar_tot_pts", value = input$nonpar_tot_ptsN)
+  })
+  observe({
+    updateNumericInput(session, "nonpar_len_firstN", value = input$nonpar_len_first)
+  })
+  observe({
+    updateSliderInput(session, "nonpar_len_first", value = input$nonpar_len_firstN)
+  })
+  observe({
+    updateNumericInput(session, "nonpar_len_lastN", value = input$nonpar_len_last)
+  })
+  observe({
+    updateSliderInput(session, "nonpar_len_last", value = input$nonpar_len_lastN)
+  })
+
   # get the lengths (or ages) based on the range the user inputs.
   # note using 0.1 bins.
   len <- reactive({
@@ -91,6 +112,13 @@ server <- function(input, output, session) {
         input$par.e, input$par.f,
         use_e_999 = input$use_999_init,
         use_f_999 = input$use_999_fin
+      ),
+      "Non-parametric for length only (6)" = nonparasize6(
+        x = len(),
+         len_pt_first = input$nonpar_len_first,
+         len_pt_last = input$nonpar_len_last,
+         # TODO: need to allow users to input values for sel_val_pts
+         sel_val_pts = log(seq(0.1, 0.8, length.out = input$nonpar_tot_pts))
       )
     )
   })

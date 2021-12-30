@@ -66,7 +66,8 @@ body <- dashboardBody(
           selectInput("type", "Selectivity Pattern:",
             choices = c(
               "Logistic (1)",
-              "Double Normal (24 length, 20 age)"
+              "Double Normal (24 length, 20 age)",
+              "Non-parametric for length only (6)"
             )
           ),
           sliderInput("range", "Length or Age Range:",
@@ -129,6 +130,35 @@ body <- dashboardBody(
               column(
                 6,
                 checkboxInput("use_999_fin", "Use -999 for Final")
+              )
+            )
+          ),
+          conditionalPanel(
+            condition = "input.type == 'Non-parametric for length only (6)'",
+            #TODO: add to this the ability for users to put in log selectivity
+            # values equal to the total number of waypoints (may need something
+            # reactive in server?)
+            fluidRow(
+              column(
+                8,
+                sliderInput(
+                  "nonpar_tot_pts", "Total number of waypoints",
+                   2, 20, 3, 1
+                ),
+                sliderInput(
+                  "nonpar_len_first", "Length for first waypoint",
+                  0, 100, 10, 0.1
+                ),
+                sliderInput(
+                  "nonpar_len_last", "Length for last waypoint",
+                  0, 100, 90, 0.1
+                )
+              ),
+              column(
+                4,
+                numericInput("nonpar_tot_ptsN", "Total # of Waypoints:", 3),
+                numericInput("nonpar_len_firstN", "First Waypoint Length:", 10),
+                numericInput("nonpar_len_lastN", "Last Waypoint Lenth:", 90)
               )
             )
           )
