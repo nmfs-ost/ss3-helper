@@ -112,3 +112,87 @@ doubleNorm24 <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
   }
   return(sel)
 }
+
+#' Nonparametric size selectivity, pattern 6
+#'
+#' Note this works for size only and not age. Note that option 43 is similar and
+#' could be added onto this function
+#'
+#' @param n_pts The number of waypoints as specified by the user in the special
+#'  category in SS3. Probably not needed.
+#' @param len_pt_first The size for the first waypoint
+#' @param len_pt_last The size for the last waypoint
+#' @param sel_vals_pts A numeric vector containing the selectivity values at
+#'  each waypoint. Entered as logistic.
+nonparasize6 <- function(len_pt_first, len_pt_last, sel_vals_pts) {
+  lastsel-10.0;  // log(selex) for first bin;
+  lastSelPoint=len_bins_m(1);    //  first size
+  finalSelPoint=value(sp(2+scaling_offset));  // size beyond which selex is constant
+  SelPoint=value(sp(1+scaling_offset));   //  first size that will get a parameter.  Value will get incremented by step interval (temp1)
+  z=3+scaling_offset;  // parameter counter
+  temp1 = (finalSelPoint-SelPoint)/(seltype(f,4)-1.0);  // step interval
+
+  for (j=1;j<=nlength;j++)
+  {
+    if(len_bins_m(j)<SelPoint)
+    {
+      tempvec_l(j)=lastsel + (len_bins_m(j)-lastSelPoint)/(SelPoint-lastSelPoint) * (sp(z)-lastsel);
+    }
+    else if(len_bins_m(j)==SelPoint)
+    {
+      tempvec_l(j)=sp(z);
+      lastsel=sp(z);
+      lastSelPoint=SelPoint;
+      SelPoint+=temp1;
+      if(SelPoint<=finalSelPoint)
+      {z++;}
+      else
+      {SelPoint=finalSelPoint;}
+    }
+    else if(len_bins_m(j)<=finalSelPoint)
+    {
+      lastsel=sp(z);
+      lastSelPoint=SelPoint;
+      SelPoint+=temp1;
+      if(SelPoint<=finalSelPoint)
+      {z++;}
+      else
+      {SelPoint=finalSelPoint;}
+      tempvec_l(j)=lastsel + (len_bins_m(j)-lastSelPoint)/(SelPoint-lastSelPoint) * (sp(z)-lastsel);
+    }
+    else
+    {tempvec_l(j)=sp(z);}
+    #ifdef DO_ONCE
+    if(do_once==1)  echoinput<<"selex42  "<<j<<" "<<len_bins_m(j)<<" "<<SelPoint<<" "<<tempvec_l(j)<<endl;
+    #endif
+  }
+  if (scaling_offset == 0)
+  {
+    temp=max(tempvec_l);
+  }
+  else
+  {
+    int low_bin  = int(value(sp(1)));
+    int high_bin = int(value(sp(2)));
+    if (low_bin < 1)
+    {
+      low_bin = 1;
+      N_warn++;  warning<<N_warn<<" "<<" selex pattern 43; value for low bin is less than 1, so set to 1 "<<endl;
+    }
+    if (high_bin > nlength)
+    {
+      high_bin = nlength;
+      N_warn++;  warning<<N_warn<<" "<<" selex pattern 43; value for high bin is greater than "<<nlength<<", so set to "<<nlength<<" "<<endl;
+    }
+    if (high_bin < low_bin) high_bin = low_bin;
+    if (low_bin > high_bin) low_bin = high_bin;
+    sp(1) = low_bin;
+    sp(2) = high_bin;
+    temp=mean(tempvec_l(low_bin,high_bin));
+    scaling_offset = 0;     // reset scaling offset
+  }
+  sel = mfexp(tempvec_l-temp);
+  break;
+}
+
+}
