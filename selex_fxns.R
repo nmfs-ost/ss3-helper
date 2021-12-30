@@ -24,7 +24,8 @@ logistic1 <- function(len, a, b) {
 #' @param f The final value
 #' @param use_e_999 Is -999 used for the initial value?
 #' @param use_f_999 Is -999 used for the final value?
-#' @return The double normal selectivity curve given the parameters as a vector
+#' @return The double normal selectivity values given the parameters. This is a
+#'  numeric vector of the same length as `x`.
 doubleNorm24 <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
   # TODO: check if function not handling f < -1000 correctly (and -999 vals)
   if (use_e_999) {
@@ -110,89 +111,67 @@ doubleNorm24 <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
   if (j2 < length(x)) {
     sel[(j2 + 1):length(x)] <- sel[j2]
   }
-  return(sel)
+  sel
 }
 
 #' Nonparametric size selectivity, pattern 6
 #'
 #' Note this works for size only and not age. Note that option 43 is similar and
-#' could be added onto this function
+#' could be added onto this function, using 1 additional parameter
 #'
-#' @param n_pts The number of waypoints as specified by the user in the special
-#'  category in SS3. Probably not needed.
+#' @param x A vector of lengths
 #' @param len_pt_first The size for the first waypoint
 #' @param len_pt_last The size for the last waypoint
-#' @param sel_vals_pts A numeric vector containing the selectivity values at
+#' @param sel_vals_pts A numeric vector containing the log scale selectivity values at each waypoint
+#' @param scaling_offset Should be left as 0 except for pattern 43. Defaults to 0.
 #'  each waypoint. Entered as logistic.
-nonparasize6 <- function(len_pt_first, len_pt_last, sel_vals_pts) {
-  lastsel-10.0;  // log(selex) for first bin;
-  lastSelPoint=len_bins_m(1);    //  first size
-  finalSelPoint=value(sp(2+scaling_offset));  // size beyond which selex is constant
-  SelPoint=value(sp(1+scaling_offset));   //  first size that will get a parameter.  Value will get incremented by step interval (temp1)
-  z=3+scaling_offset;  // parameter counter
-  temp1 = (finalSelPoint-SelPoint)/(seltype(f,4)-1.0);  // step interval
-
-  for (j=1;j<=nlength;j++)
-  {
-    if(len_bins_m(j)<SelPoint)
-    {
-      tempvec_l(j)=lastsel + (len_bins_m(j)-lastSelPoint)/(SelPoint-lastSelPoint) * (sp(z)-lastsel);
-    }
-    else if(len_bins_m(j)==SelPoint)
-    {
-      tempvec_l(j)=sp(z);
-      lastsel=sp(z);
-      lastSelPoint=SelPoint;
-      SelPoint+=temp1;
-      if(SelPoint<=finalSelPoint)
-      {z++;}
-      else
-      {SelPoint=finalSelPoint;}
-    }
-    else if(len_bins_m(j)<=finalSelPoint)
-    {
-      lastsel=sp(z);
-      lastSelPoint=SelPoint;
-      SelPoint+=temp1;
-      if(SelPoint<=finalSelPoint)
-      {z++;}
-      else
-      {SelPoint=finalSelPoint;}
-      tempvec_l(j)=lastsel + (len_bins_m(j)-lastSelPoint)/(SelPoint-lastSelPoint) * (sp(z)-lastsel);
-    }
-    else
-    {tempvec_l(j)=sp(z);}
-    #ifdef DO_ONCE
-    if(do_once==1)  echoinput<<"selex42  "<<j<<" "<<len_bins_m(j)<<" "<<SelPoint<<" "<<tempvec_l(j)<<endl;
-    #endif
+#' @return The double normal selectivity values given the parameters. This is a
+#'  numeric vector of the same length as `x`.
+nonparasize6 <- function(x, len_pt_first, len_pt_last, sel_vals_pts, scaling_offset = 0) {
+  #vector of waypoints length values
+  len_vals_pts <- seq(from = len_pt_first, to = len_pt_first, length.out = length(sel_vals_pts))
+  # calculate slope for each line segment
+  # line segment before len_pt_first
+  slope_before <- (sel_vals_pt[1] - (-10))/ # because neg 10 is always first sel in this case
+    len_pt_first - x[1]
+  # slopes for each line segment
+  # length is 1 less than sel_vals_pts
+  slopes_during <- vector(length(sel_vals_pts) - 1, mode = "numeric")
+  for(i in seq_along(slopes_during)) {
+    slopes_during[i] <- (sel_val_pts[i+1] - sel_val_pts[i])/
+      (len_val_pts[i+1] - len_val_pts[i])
   }
-  if (scaling_offset == 0)
-  {
-    temp=max(tempvec_l);
-  }
-  else
-  {
-    int low_bin  = int(value(sp(1)));
-    int high_bin = int(value(sp(2)));
-    if (low_bin < 1)
-    {
-      low_bin = 1;
-      N_warn++;  warning<<N_warn<<" "<<" selex pattern 43; value for low bin is less than 1, so set to 1 "<<endl;
+  # line segment after
+  slope_after <- 0 # because constant
+  # based on the slopes, calculate the selectivity vals for each point
+  log_selex_x <- vector(length(x), mode = "numeric")
+  for(i in seq_along(x)) {
+    tmp_len <- x[i]
+    #figure out which slope
+    if(tmp_len < len_pt_first) {
+      tmp_slope <- slope_before
+      tmp_b <- -10
+      tmp_low_len_waypt <- x[1]
     }
-    if (high_bin > nlength)
-    {
-      high_bin = nlength;
-      N_warn++;  warning<<N_warn<<" "<<" selex pattern 43; value for high bin is greater than "<<nlength<<", so set to "<<nlength<<" "<<endl;
+    if(tmp_len >len_pt_last) {
+      tmp_slope <- slope_after
+      tmp_b <- sel_vals_pts[length(sel_vals_pts)]
+      tmp_low_len_waypt <- len_pt_last
     }
-    if (high_bin < low_bin) high_bin = low_bin;
-    if (low_bin > high_bin) low_bin = high_bin;
-    sp(1) = low_bin;
-    sp(2) = high_bin;
-    temp=mean(tempvec_l(low_bin,high_bin));
-    scaling_offset = 0;     // reset scaling offset
+    if (tmp_len >= len_pt_first & tmp_len <= len_pt_last) {
+      # finds closest without going over to figure out slope and b index
+      num_closest <- len_val_pts - tmp_len
+      num_closest <- ifelse(num_closest > 0, NA, num_closest)
+      num_ind <- which.min(abs(num_closest))
+      tmp_slope <- slope_during[num_ind]
+      tmp_b <- sel_vals_pts[num_ind]
+      tmp_low_len_waypt <- len_val_pts[num_ind]
+    }
+    # next, figure out the log sel value.
+    tmp_sel <- tmp_b + tmp_slope(tmp_len - tmp_low_len_waypt)
+    log_selex_x[i] <- tmp_sel
   }
-  sel = mfexp(tempvec_l-temp);
-  break;
-}
-
+  # convert values from the log scale
+  nominal_selex_x <- exp(log_selex_x)
+  nominal_selex_x
 }
