@@ -84,8 +84,8 @@ server <- function(input, output, session) {
   # Calculate the selectivity based on user input
   selex <- reactive({
     switch(input$type,
-      "Logistic (1)" = logistic1.fn(len(), input$par1, input$par2),
-      "Double Normal (24 length, 20 age)" = doubleNorm24.fn(
+      "Logistic (1)" = logistic1(len(), input$par1, input$par2),
+      "Double Normal (24 length, 20 age)" = doubleNorm24(
         len(), input$par.a, input$par.b,
         input$par.c, input$par.d,
         input$par.e, input$par.f,

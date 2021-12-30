@@ -6,7 +6,7 @@
 #' @param a The inflection point
 #' @param b The 95% width
 #' @return The selectivity curve as a vector
-logistic1.fn <- function(len, a, b) {
+logistic1 <- function(len, a, b) {
   neglog19 <- -1 * log(19)
   denom <- 1. + exp(neglog19 * (len - a) / b)
   sel <- 1 / denom
@@ -25,7 +25,7 @@ logistic1.fn <- function(len, a, b) {
 #' @param use_e_999 Is -999 used for the initial value?
 #' @param use_f_999 Is -999 used for the final value?
 #' @return The double normal selectivity curve given the parameters as a vector
-doubleNorm24.fn <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
+doubleNorm24 <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
   # TODO: check if function not handling f < -1000 correctly (and -999 vals)
   if (use_e_999) {
     e <- -999
