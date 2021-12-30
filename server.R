@@ -1,5 +1,5 @@
 library(shiny)
-source("selex_fxns.R")
+source("R/selex_fxns.R")
 
 server <- function(input, output, session) {
   # Input for logistic parameters;

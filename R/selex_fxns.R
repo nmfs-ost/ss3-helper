@@ -122,21 +122,21 @@ doubleNorm24 <- function(x, a, b, c, d, e, f, use_e_999, use_f_999) {
 #' @param x A vector of lengths
 #' @param len_pt_first The size for the first waypoint
 #' @param len_pt_last The size for the last waypoint
-#' @param sel_vals_pts A numeric vector containing the log scale selectivity values at each waypoint
+#' @param sel_val_pts A numeric vector containing the log scale selectivity values at each waypoint
 #' @param scaling_offset Should be left as 0 except for pattern 43. Defaults to 0.
 #'  each waypoint. Entered as logistic.
 #' @return The double normal selectivity values given the parameters. This is a
 #'  numeric vector of the same length as `x`.
-nonparasize6 <- function(x, len_pt_first, len_pt_last, sel_vals_pts, scaling_offset = 0) {
+nonparasize6 <- function(x, len_pt_first, len_pt_last, sel_val_pts, scaling_offset = 0) {
   #vector of waypoints length values
-  len_vals_pts <- seq(from = len_pt_first, to = len_pt_first, length.out = length(sel_vals_pts))
+  len_val_pts <- seq(from = len_pt_first, to = len_pt_last, length.out = length(sel_val_pts))
   # calculate slope for each line segment
   # line segment before len_pt_first
-  slope_before <- (sel_vals_pt[1] - (-10))/ # because neg 10 is always first sel in this case
+  slope_before <- (sel_val_pts[1] - (-10))/ # because neg 10 is always first sel in this case
     len_pt_first - x[1]
   # slopes for each line segment
-  # length is 1 less than sel_vals_pts
-  slopes_during <- vector(length(sel_vals_pts) - 1, mode = "numeric")
+  # length is 1 less than sel_val_pts
+  slopes_during <- vector(length(sel_val_pts) - 1, mode = "numeric")
   for(i in seq_along(slopes_during)) {
     slopes_during[i] <- (sel_val_pts[i+1] - sel_val_pts[i])/
       (len_val_pts[i+1] - len_val_pts[i])
@@ -155,7 +155,7 @@ nonparasize6 <- function(x, len_pt_first, len_pt_last, sel_vals_pts, scaling_off
     }
     if(tmp_len >len_pt_last) {
       tmp_slope <- slope_after
-      tmp_b <- sel_vals_pts[length(sel_vals_pts)]
+      tmp_b <- sel_val_pts[length(sel_val_pts)]
       tmp_low_len_waypt <- len_pt_last
     }
     if (tmp_len >= len_pt_first & tmp_len <= len_pt_last) {
@@ -163,12 +163,15 @@ nonparasize6 <- function(x, len_pt_first, len_pt_last, sel_vals_pts, scaling_off
       num_closest <- len_val_pts - tmp_len
       num_closest <- ifelse(num_closest > 0, NA, num_closest)
       num_ind <- which.min(abs(num_closest))
-      tmp_slope <- slope_during[num_ind]
-      tmp_b <- sel_vals_pts[num_ind]
+      tmp_slope <- slopes_during[num_ind]
+      if(is.na(tmp_slope)) { # this is the case when tmp_len = len_pt_past
+        tmp_slope <- 0
+      }
+      tmp_b <- sel_val_pts[num_ind]
       tmp_low_len_waypt <- len_val_pts[num_ind]
     }
     # next, figure out the log sel value.
-    tmp_sel <- tmp_b + tmp_slope(tmp_len - tmp_low_len_waypt)
+    tmp_sel <- tmp_b + tmp_slope*(tmp_len - tmp_low_len_waypt)
     log_selex_x[i] <- tmp_sel
   }
   # convert values from the log scale
