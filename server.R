@@ -88,7 +88,8 @@ server <- function(input, output, session) {
       "Double Normal (24 length, 20 age)" = doubleNorm24.fn(
         len(), input$par.a, input$par.b,
         input$par.c, input$par.d,
-        input$par.e, input$par.f, use_e_999 = input$use_999_init,
+        input$par.e, input$par.f,
+        use_e_999 = input$use_999_init,
         use_f_999 = input$use_999_fin
       )
     )
