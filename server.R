@@ -101,6 +101,6 @@ server <- function(input, output, session) {
   })
   # creat the plot
   output$selPlot <- renderPlot({
-    plot(len(), selex(), type = "l", lwd = 3, xlab = "Length or Age", ylab = "Selectivity (S)", ylim = c(0, 1))
+    plot(len(), selex(), type = "l", lwd = 3, xlab = "Length or Age", ylab = "Selectivity", ylim = c(0, 1))
   })
 }
