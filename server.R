@@ -3,7 +3,7 @@ source("selex_fxns.R")
 
 server <- function(input, output, session) {
   # Input for logistic parameters;
-  # make sure sliders and numeric iputs show the same thing
+  # make sure sliders and numeric inputs show the same thing
   observe({
     updateNumericInput(session, "par2N", value = input$par2)
   })
